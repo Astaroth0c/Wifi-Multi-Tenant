@@ -23,16 +23,20 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ## Testes
 
 ```bash
-npm test                     # 45 testes de integração com PostgreSQL real (embedded-postgres)
+npm test                     # 47 testes de integração com PostgreSQL real (embedded-postgres)
 ```
 
-## Portal PWA (`/portal/`)
+## Portal PWA (`/portal/`) e Painel Admin (`/admin/`)
 
 O backend serve o PWA em `/portal/` (raiz `/` redireciona para lá) quando o diretório
 `../portal` existe — sem build, sem CDN externa, compatível com o popup do captive portal.
 Fluxo: reconexão automática por MAC → boas-vindas com aviso LGPD → cadastro (foto por
 câmera ou upload) → código SMS → conectado com polling do tempo restante. O caminho do
 PWA pode ser ajustado com `PORTAL_DIR`.
+
+O painel admin (React) é servido em `/admin/` a partir de `../admin/dist` (ajustável com
+`ADMIN_DIR`); a raiz `/admin` redireciona para `/admin/`. Para regenerar o build:
+`cd admin && npm install && npm run build`.
 
 ## Endpoints principais (`/v1`)
 
@@ -69,4 +73,6 @@ Admin (JWT de 30 min; login com **senha + TOTP**):
 
 ## Próximos passos (fora do escopo deste MVP de backend)
 
-PWA do portal, painel React, app React Native e pacote de provisionamento OpenWRT/UnTangled.
+App Android: fonte React Native em `../app` (APK compilado e assinado fora do servidor —
+veja `../app/README.md`). Pacote do roteador em `../router`. Manual completo em
+`../docs/MANUAL.md`.

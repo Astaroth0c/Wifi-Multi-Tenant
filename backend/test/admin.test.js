@@ -1,5 +1,8 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import {
   iniciarBanco, pararBanco, limparBanco, buildApp, criarTenant, criarClienteAtivo,
   criarAdmin, codigoTotp, FOTO_TESTE,
@@ -119,3 +122,13 @@ test('configuracoes do tenant sao atualizaveis', async () => {
     payload: { configuracoes: { limite_diario_minutos: 9999 } } });
   assert.equal(invalido.statusCode, 400);
 });
+
+if (existsSync(join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'admin', 'dist', 'index.html'))) {
+  test('painel admin e servido em /admin/', async () => {
+    const res = await app.inject({ method: 'GET', url: '/admin/' });
+    assert.equal(res.statusCode, 200);
+    assert.match(res.body, /id="raiz"/);
+    const redirect = await app.inject({ method: 'GET', url: '/admin' });
+    assert.equal(redirect.statusCode, 302);
+  });
+}

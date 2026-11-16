@@ -6,6 +6,9 @@ const state = {
   tenantId: params.get('tenant') || params.get('tenant_id') || localStorage.getItem('tenant_id'),
   mac: params.get('mac') || null,
   ip: params.get('ip') || null,
+  uamip: params.get('uamip') || null,
+  uamport: params.get('uamport') || null,
+  sessionid: params.get('sessionid') || null,
   config: null,
   token: sessionStorage.getItem('token') || null,
   telefoneCadastro: null,
@@ -65,11 +68,25 @@ function aplicarConfig() {
   if (iv && iv.cor_primaria) document.documentElement.style.setProperty('--cor-primaria', iv.cor_primaria);
 }
 
+async function liberarChilli() {
+  if (!state.uamip || !state.uamport) return;
+  const usuario = state.mac || state.sessionid || 'portal';
+  const senha = state.sessionid || 'portal';
+  try {
+    await fetch(`http://${state.uamip}:${state.uamport}/logon?username=${encodeURIComponent(usuario)}&password=${encodeURIComponent(senha)}`, {
+      mode: 'no-cors',
+    });
+  } catch {
+    /* sem uamport acessível: a liberação ocorre pelo chilli_query no roteador */
+  }
+}
+
 async function conectarSessao() {
   const dados = await api('/sessoes', {
     method: 'POST',
     body: { mac: state.mac, ip_interno: state.ip },
   });
+  await liberarChilli();
   iniciarPolling(dados.sessao.id);
   mostrarTela('tela-conectado');
   atualizarRestante(dados.tempo_restante_s);

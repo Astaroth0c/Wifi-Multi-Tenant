@@ -104,3 +104,15 @@ test('particao mensal e criada sob demanda para datas futuras', async () => {
   const r = await pool.query(`select to_regclass('public.logs_acesso_${y}${m}') as t`);
   assert.ok(r.rows[0].t);
 });
+
+test('roteador consulta autorizacoes de sessoes recentes', async () => {
+  const res = await app.inject({ method: 'GET', url: '/v1/roteador/autorizacoes',
+    headers: { 'x-router-token': tenant.router_token } });
+  assert.equal(res.statusCode, 200);
+  const lista = res.json().autorizacoes;
+  assert.ok(Array.isArray(lista));
+  const minha = lista.find((a) => a.sessao_id === sessao.id);
+  assert.ok(minha, 'sessao recente deve estar na lista');
+  assert.equal(minha.mac, 'AA:BB:CC:00:00:01');
+  assert.ok(minha.session_timeout > 0);
+});

@@ -48,8 +48,18 @@ export async function buildApp(opts = {}) {
   const dirRaiz = join(dirname(fileURLToPath(import.meta.url)), '..');
   const dirPortal = process.env.PORTAL_DIR || join(dirRaiz, '..', 'portal');
   if (existsSync(join(dirPortal, 'index.html'))) {
-    await app.register(fastifyStatic, { root: dirPortal, prefix: '/portal/' });
+    await app.register(async (instance) => {
+      await instance.register(fastifyStatic, { root: dirPortal, prefix: '/portal/' });
+    });
     app.get('/', async (req, reply) => reply.redirect('/portal/'));
+  }
+
+  const dirAdmin = process.env.ADMIN_DIR || join(dirRaiz, '..', 'admin', 'dist');
+  if (existsSync(join(dirAdmin, 'index.html'))) {
+    await app.register(async (instance) => {
+      await instance.register(fastifyStatic, { root: dirAdmin, prefix: '/admin/', index: 'index.html' });
+    });
+    app.get('/admin', async (req, reply) => reply.redirect('/admin/'));
   }
 
   return app;

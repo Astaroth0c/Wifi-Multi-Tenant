@@ -1,4 +1,5 @@
 import { query, withTransaction } from '../db.js';
+import { config } from '../config.js';
 import { calcularHash, hashGenesis } from '../services/hashchain.js';
 import { garantirParticao } from '../services/expurgo.js';
 import { ErroApi } from '../services/sessoes.js';
@@ -87,6 +88,25 @@ export default async function roteadorRoutes(app) {
     const r = await query('select * from tenants where router_token = $1 and ativo = true', [token]);
     if (!r.rows[0]) return reply.code(401).send({ erro: 'router_token_invalido' });
     req.tenant = r.rows[0];
+  });
+
+  app.get('/autorizacoes', async (req) => {
+    const r = await query(
+      `select s.id, s.usuario_id, d.mac, s.ip_interno::text as ip_interno, s.inicio
+         from sessoes s
+         join dispositivos d on d.id = s.dispositivo_id
+        where s.tenant_id = $1 and s.fim is null and s.inicio > now() - interval '15 minutes'
+        order by s.inicio asc`,
+      [req.tenant.id],
+    );
+    return { autorizacoes: r.rows.map((s) => ({
+      sessao_id: s.id,
+      mac: s.mac,
+      ip_interno: s.ip_interno,
+      usuario_id: s.usuario_id,
+      inicio: s.inicio,
+      session_timeout: config.sessionMaxHours * 3600,
+    })) };
   });
 
   app.post('/logs', async (req, reply) => {

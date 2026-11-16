@@ -1,0 +1,28 @@
+# Configuração do CoovaChilli — Portal Cativo
+# Valores finais são definidos por provisionar.sh
+config chilli
+	option disabled	0
+	option network	guest
+	option ipaddr	192.168.182.1
+	option tundev	tun0
+	option net	192.168.182.0/24
+	option dhcpif	br-guest
+	# Portal aponta para o nosso PWA (definido no provisionamento)
+	option uamserver	http://BACKEND/portal/?tenant=TENANT_ID
+	option uamallowed	BACKEND
+	option uamport	3990
+	option uamuiport	4990
+	# Autenticação: o PWA chama /logon no uamport (PAP local)
+	option radiuslisten	127.0.0.1
+	option radiusserver1	127.0.0.1
+	option radiussecret	portalcativo
+	option radiusnasid	portal-TENANT_ID
+	# Sem RADIUS externo: liberação é feita pelo uamport após validação no backend
+	option macauth	0
+	option interval	3600
+	# Rede
+	option dns1	192.168.182.1
+	option dns2	192.168.182.1
+	# Sessão
+	option sesstimeout	43200
+	option idletimeout	600

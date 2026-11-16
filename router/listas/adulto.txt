@@ -1,0 +1,6 @@
+# Lista local de bloqueio adulto (domínios, um por linha).
+# Amplie com uma lista mantida pela loja ou configure PORTAL_CATIVO_LISTA_URL
+# no /etc/portal-cativo.conf para baixar uma lista remota diariamente.
+porn.example.com
+adulto.example.com
+nsfw.example.com
