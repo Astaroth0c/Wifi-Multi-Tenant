@@ -1,6 +1,10 @@
 import Fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import fastifyStatic from '@fastify/static';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { config } from './config.js';
 import { ErroApi } from './services/sessoes.js';
 
@@ -10,6 +14,7 @@ import sessaoRoutes from './routes/sessoes.js';
 import roteadorRoutes from './routes/roteador.js';
 import adminRoutes from './routes/admin.js';
 import privacidadeRoutes from './routes/privacidade.js';
+import portalRoutes from './routes/portal.js';
 
 export async function buildApp(opts = {}) {
   const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 4 * 1024 * 1024 });
@@ -38,6 +43,14 @@ export async function buildApp(opts = {}) {
   await app.register(roteadorRoutes, { prefix: '/v1/roteador' });
   await app.register(adminRoutes, { prefix: '/v1/admin' });
   await app.register(privacidadeRoutes, { prefix: '/v1/privacidade' });
+  await app.register(portalRoutes, { prefix: '/v1/portal' });
+
+  const dirRaiz = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const dirPortal = process.env.PORTAL_DIR || join(dirRaiz, '..', 'portal');
+  if (existsSync(join(dirPortal, 'index.html'))) {
+    await app.register(fastifyStatic, { root: dirPortal, prefix: '/portal/' });
+    app.get('/', async (req, reply) => reply.redirect('/portal/'));
+  }
 
   return app;
 }

@@ -8,8 +8,8 @@ e gestão multi-tenant. Especificação completa: `docs/spec.md` (seções 1–6
 
 | Diretório | Componente | Status |
 |---|---|---|
-| `backend/` | API REST multi-tenant (Node.js + Fastify + PostgreSQL) — serve portal, painel e app | ✅ MVP concluído, 41 testes de integração |
-| `portal/` | PWA do portal cativo (captura, SMS, sessão) | 🔜 próximo passo |
+| `backend/` | API REST multi-tenant (Node.js + Fastify + PostgreSQL) — serve portal, painel e app | ✅ MVP concluído, 45 testes de integração |
+| `portal/` | PWA do portal cativo (cadastro, SMS, sessão) — servida pelo backend em `/portal/` | ✅ MVP concluído |
 | `admin/` | Painel administrativo web (React) | planejado |
 | `app/` | App Android (React Native, APK assinado) | planejado |
 | `router/` | Pacote de provisionamento OpenWRT/UnTangled (chilli, firewall, DNS filtrado) | planejado |
@@ -32,8 +32,8 @@ veja [backend/README.md](backend/README.md).
 
 ## Roadmap
 
-1. **PWA do portal** (`portal/`) — cadastro com foto, verificação SMS, login/PIN,
-   status da sessão e aviso de limite; servida pelo próprio backend.
+1. ~~PWA do portal~~ ✅ concluído — reconexão por MAC, cadastro com foto (câmera/upload),
+   verificação SMS, login senha/PIN, sessão com polling e aviso de limite.
 2. Painel React (`admin/`) consumindo `/v1/admin/*`.
 3. Pacote de provisionamento do roteador (`router/`).
 4. App React Native (`app/`).

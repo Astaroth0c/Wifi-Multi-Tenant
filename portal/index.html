@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a5fb4">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>Wi-Fi do Cliente</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <header>
+      <h1 id="titulo-estabelecimento">Wi-Fi do Cliente</h1>
+      <p id="subtitulo" class="muted"></p>
+    </header>
+
+    <section id="tela-boas-vindas" class="tela">
+      <div class="aviso" id="aviso-privacidade"></div>
+      <button id="btn-cadastrar" class="primario">Primeiro acesso — cadastrar</button>
+      <button id="btn-ir-login">Já tenho conta — entrar</button>
+    </section>
+
+    <section id="tela-cadastro" class="tela oculta">
+      <form id="form-cadastro">
+        <label>Nome completo <input id="cad-nome" required autocomplete="name"></label>
+        <label>E-mail <input id="cad-email" type="email" autocomplete="email"></label>
+        <label>Telefone (WhatsApp) <input id="cad-telefone" type="tel" required placeholder="11 91234-5678" autocomplete="tel"></label>
+        <label>Senha (mín. 8 caracteres) <input id="cad-senha" type="password" required minlength="8" autocomplete="new-password"></label>
+        <label>PIN de 4 a 6 dígitos (opcional, para login rápido) <input id="cad-pin" inputmode="numeric" pattern="\d{4,6}" autocomplete="off"></label>
+
+        <div class="foto-bloco">
+          <p>Foto obrigatória</p>
+          <video id="camera" autoplay playsinline muted class="oculta"></video>
+          <canvas id="foto-canvas" width="320" height="240" class="oculta"></canvas>
+          <img id="foto-preview" alt="Prévia da foto" class="oculta">
+          <div>
+            <button type="button" id="btn-abrir-camera">Usar câmera</button>
+            <button type="button" id="btn-capturar" class="oculta">Capturar foto</button>
+            <label class="botao-arquivo">Enviar arquivo
+              <input id="foto-arquivo" type="file" accept="image/png,image/jpeg" class="oculta">
+            </label>
+          </div>
+        </div>
+
+        <label class="aceite">
+          <input id="cad-aceite" type="checkbox" required>
+          Li e aceito os <a href="#" id="link-termos">termos de uso</a> e a
+          <a href="#" id="link-politica">política de privacidade</a>.
+        </label>
+        <button type="submit" class="primario">Cadastrar e receber código</button>
+        <button type="button" class="voltar" data-volta="tela-boas-vindas">Voltar</button>
+      </form>
+    </section>
+
+    <section id="tela-sms" class="tela oculta">
+      <form id="form-sms">
+        <p>Enviamos um código de 6 dígitos por SMS para o seu telefone.</p>
+        <label>Código <input id="sms-codigo" inputmode="numeric" maxlength="6" pattern="\d{6}" required autocomplete="one-time-code"></label>
+        <button type="submit" class="primario">Verificar e conectar</button>
+        <button type="button" id="btn-reenviar">Reenviar código</button>
+        <button type="button" class="voltar" data-volta="tela-boas-vindas">Voltar</button>
+      </form>
+    </section>
+
+    <section id="tela-login" class="tela oculta">
+      <form id="form-login">
+        <label>E-mail ou telefone <input id="login-identificador" required autocomplete="username"></label>
+        <div class="alternancia">
+          <button type="button" id="aba-senha" class="aba ativa">Senha</button>
+          <button type="button" id="aba-pin" class="aba">PIN</button>
+        </div>
+        <label id="grupo-senha">Senha <input id="login-senha" type="password" autocomplete="current-password"></label>
+        <label id="grupo-pin" class="oculta">PIN <input id="login-pin" inputmode="numeric" maxlength="6" pattern="\d{4,6}" autocomplete="off"></label>
+        <button type="submit" class="primario">Entrar</button>
+        <button type="button" class="voltar" data-volta="tela-boas-vindas">Voltar</button>
+      </form>
+    </section>
+
+    <section id="tela-conectado" class="tela oculta">
+      <div class="status">
+        <p class="grande">✅ Conectado</p>
+        <p>Rede: <strong id="ssid-atual"></strong></p>
+        <p>Tempo restante hoje: <strong id="tempo-restante">—</strong></p>
+        <p class="muted" id="sessao-id"></p>
+      </div>
+      <button id="btn-logout">Encerrar sessão</button>
+    </section>
+
+    <section id="tela-bloqueado" class="tela oculta">
+      <div class="status">
+        <p class="grande" id="bloqueio-titulo">⛔ Limite atingido</p>
+        <p id="bloqueio-mensagem"></p>
+      </div>
+      <button type="button" class="voltar" data-volta="tela-boas-vindas">Voltar ao início</button>
+    </section>
+
+    <footer>
+      <p class="muted pequeno" id="rodape-tenant"></p>
+    </footer>
+  </main>
+
+  <div id="toast" class="oculta"></div>
+  <script src="app.js"></script>
+</body>
+</html>

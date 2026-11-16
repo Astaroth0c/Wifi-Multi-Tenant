@@ -1,0 +1,11 @@
+{
+  "name": "Portal Wi-Fi do Cliente",
+  "short_name": "Wi-Fi Cliente",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f6fa",
+  "theme_color": "#1a5fb4",
+  "icons": [
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
