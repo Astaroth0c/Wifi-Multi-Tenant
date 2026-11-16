@@ -1,0 +1,43 @@
+import Fastify from 'fastify';
+import jwt from '@fastify/jwt';
+import rateLimit from '@fastify/rate-limit';
+import { config } from './config.js';
+import { ErroApi } from './services/sessoes.js';
+
+import healthRoutes from './routes/health.js';
+import authRoutes from './routes/auth.js';
+import sessaoRoutes from './routes/sessoes.js';
+import roteadorRoutes from './routes/roteador.js';
+import adminRoutes from './routes/admin.js';
+import privacidadeRoutes from './routes/privacidade.js';
+
+export async function buildApp(opts = {}) {
+  const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 4 * 1024 * 1024 });
+
+  await app.register(jwt, { secret: config.jwtSecret });
+  await app.register(rateLimit, { global: false, max: 300, timeWindow: '1 minute' });
+
+  app.setErrorHandler((err, req, reply) => {
+    if (err instanceof ErroApi) {
+      return reply.code(err.statusCode).send({ erro: err.codigo, ...err.extras });
+    }
+    if (err.statusCode === 429) {
+      return reply.code(429).send({ erro: 'muitas_tentativas' });
+    }
+    if (err.statusCode && err.statusCode < 500) {
+      return reply.code(err.statusCode).send({ erro: err.code || 'requisicao_invalida', detalhe: err.message });
+    }
+    req.log?.error(err);
+    if (config.env !== 'production') console.error('[erro_interno]', err);
+    return reply.code(500).send({ erro: 'erro_interno' });
+  });
+
+  await app.register(healthRoutes, { prefix: '/v1' });
+  await app.register(authRoutes, { prefix: '/v1/auth' });
+  await app.register(sessaoRoutes, { prefix: '/v1' });
+  await app.register(roteadorRoutes, { prefix: '/v1/roteador' });
+  await app.register(adminRoutes, { prefix: '/v1/admin' });
+  await app.register(privacidadeRoutes, { prefix: '/v1/privacidade' });
+
+  return app;
+}

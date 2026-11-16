@@ -1,0 +1,26 @@
+{
+  "name": "portal-cativo-backend",
+  "version": "0.1.0",
+  "description": "API REST multi-tenant do portal cativo Wi-Fi (OpenWRT/UnTangled)",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "migrate": "node src/scripts/migrate.js",
+    "seed": "node src/scripts/seed.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  },
+  "dependencies": {
+    "@fastify/jwt": "^9.0.4",
+    "@fastify/rate-limit": "^10.2.2",
+    "@node-rs/argon2": "^2.0.2",
+    "fastify": "^5.2.1",
+    "otplib": "^12.0.1",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "embedded-postgres": "^17.4.0-beta.15"
+  }
+}
