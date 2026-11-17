@@ -1,4 +1,4 @@
-# Pacote do roteador — Portal Cativo (OpenWRT/UnTangled)
+# Pacote do roteador — OrangeWifi (OpenWRT/UnTangled)
 
 Provisionamento de um roteador com OpenWRT (ou UnTangled, baseado em OpenWRT)
 como portal cativo do sistema: CoovaChilli + DNS filtrado + envio de logs ao

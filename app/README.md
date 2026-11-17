@@ -1,4 +1,4 @@
-# App Android — Portal Cativo (React Native)
+# App Android — OrangeWifi (React Native)
 
 Fonte do app de gestão (mesma API REST e permissões do painel web).
 
@@ -21,7 +21,7 @@ cd app
 npm install
 
 # gera a pasta android/ do projeto nativo (uma única vez)
-npx @react-native-community/cli init PortalCativo --skip-install --directory /tmp/rn-base
+npx @react-native-community/cli init OrangeWifi --skip-install --directory /tmp/rn-base
 cp -r /tmp/rn-base/android ./android
 
 # ajuste o nome do pacote se desejar (com.rnbase → com.sualoja.portalcativo)

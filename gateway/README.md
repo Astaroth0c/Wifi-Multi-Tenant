@@ -1,4 +1,4 @@
-# Gateway Portal Cativo — Debian / Kali / Raspberry Pi OS
+# Gateway OrangeWifi — Debian / Kali / Raspberry Pi OS
 
 Alternativa ao pacote `router/` (OpenWRT) para quando não há roteador
 compatível: um **mini PC, Raspberry Pi ou PC velho com 2 interfaces de rede**

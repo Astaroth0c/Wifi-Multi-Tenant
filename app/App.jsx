@@ -61,7 +61,7 @@ export default function App() {
   if (!token) {
     return (
       <ScrollView contentContainerStyle={estilos.central} style={estilos.base}>
-        <Text style={estilos.titulo}>Portal Cativo — Admin</Text>
+        <Text style={estilos.titulo}>OrangeWifi — Admin</Text>
         <TextInput style={estilos.campo} placeholder="E-mail" autoCapitalize="none"
           keyboardType="email-address" value={email} onChangeText={setEmail} />
         <TextInput style={estilos.campo} placeholder="Senha" secureTextEntry value={senha} onChangeText={setSenha} />

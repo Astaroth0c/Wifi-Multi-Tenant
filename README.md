@@ -1,4 +1,4 @@
-# Wi-Fi Multi-Tenant — Portal Cativo
+# OrangeWifi — Portal Cativo Wi-Fi Multi-Tenant
 
 Sistema de portal cativo para Wi-Fi de clientes em lojas, baseado em OpenWRT + UnTangled,
 com autenticação obrigatória, registro de acessos com integridade garantida (cadeia de hash)
@@ -51,6 +51,10 @@ ssh root@IP_ROTEADOR "sh /tmp/portal-cativo/provisionar.sh http://IP_SERVIDOR:30
 ```
 
 ## Destaques técnicos
+
+- **Identidade OrangeWifi** — "Sua rede, sem nós.": painel e portal com visual glass
+  laranja, tema claro/escuro, dashboard com resumo ao vivo (`GET /v1/admin/resumo`)
+  e paleta de comandos (Ctrl+K) no painel.
 
 - **Cadeia de hash encadeado** por tenant em todos os logs (qualquer alteração fora do
   expurgo quebra a cadeia — verificado pelo painel e pela API).

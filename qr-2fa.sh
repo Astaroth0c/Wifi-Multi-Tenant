@@ -28,7 +28,7 @@ fi
 echo "Abra o app autenticador no celular (Google Authenticator/Aegis):"
 echo "toque em '+' > 'Ler QR Code' e aponte para a tela:"
 echo
-qrencode -t ANSIUTF8 "otpauth://totp/PortalCativo:admin?secret=${SEGREDO}&issuer=PortalCativo" 2>/dev/null \
+qrencode -t ANSIUTF8 "otpauth://totp/OrangeWifi:admin?secret=${SEGREDO}&issuer=OrangeWifi" 2>/dev/null \
   || true
 echo
 echo "Segredo (para digitar manualmente no app, se preferir): $SEGREDO"

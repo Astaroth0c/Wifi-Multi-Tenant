@@ -1,5 +1,5 @@
 #!/bin/sh
-# Provisionamento do Portal Cativo no roteador.
+# Provisionamento do OrangeWifi no roteador.
 # Uso: sh provisionar.sh [URL_BACKEND] [TENANT_ID] [ROUTER_TOKEN]
 # Sem argumentos, pergunta interativamente.
 set -e

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Gateway Portal Cativo — Debian / Kali / Raspberry Pi OS
+# Gateway OrangeWifi — Debian / Kali / Raspberry Pi OS
 # Transforma um mini PC / Pi com 2 interfaces de rede no "roteador" do sistema:
 # NAT, DHCP+DNS filtrado, captive portal por nftables e o backend na mesma máquina.
 #
@@ -10,7 +10,7 @@ set -e
 
 DIR_RAIZ="$(cd "$(dirname "$0")" && pwd)"
 
-echo "== Portal Cativo Gateway: pacotes =="
+echo "== OrangeWifi Gateway: pacotes =="
 export DEBIAN_FRONTEND=noninteractive
 apt update
 apt install -y postgresql nodejs npm dnsmasq nftables curl ca-certificates

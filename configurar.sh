@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Correção e auto-configuração do Portal Cativo — Debian / Kali / Raspberry Pi OS
+# Correção e auto-configuração do OrangeWifi — Debian / Kali / Raspberry Pi OS
 #
 # Faz tudo que costuma dar errado na instalação manual:
 #   1. instala pacotes que faltam (node, npm, postgresql)
@@ -24,7 +24,7 @@ ENV_FILE="$DIR_BACKEND/.env"
 SENHA_ADMIN="${ADMIN_SENHA:-TroqueEstaSenha123}"
 
 echo "=============================================="
-echo " Portal Cativo — correção e auto-configuração"
+echo " OrangeWifi — correção e auto-configuração"
 echo "=============================================="
 
 # ---------------------------------------------------------------- 1. pacotes
@@ -146,7 +146,7 @@ if [ -n "$TOTP_SECRET" ]; then
     echo "   Abra o app autenticador no celular (Google Authenticator/Aegis):"
     echo "   toque em '+' > 'Ler QR Code' e aponte para a tela:"
     echo
-    qrencode -t ANSIUTF8 "otpauth://totp/PortalCativo:admin?secret=${TOTP_SECRET}&issuer=PortalCativo" || true
+    qrencode -t ANSIUTF8 "otpauth://totp/OrangeWifi:admin?secret=${TOTP_SECRET}&issuer=OrangeWifi" || true
   fi
 fi
 

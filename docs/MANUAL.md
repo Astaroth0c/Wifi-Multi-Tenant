@@ -1,4 +1,4 @@
-# Manual de Instalação e Uso — Portal Cativo Wi-Fi Multi-Tenant
+# Manual de Instalação e Uso — OrangeWifi
 
 Sistema completo de portal cativo para Wi-Fi de clientes: backend API, PWA do
 portal, painel admin web, app Android e pacote de provisionamento para
@@ -117,7 +117,7 @@ Para o servidor subir com a máquina, crie um serviço systemd:
 ```ini
 # /etc/systemd/system/portalcativo.service
 [Unit]
-Description=Portal Cativo API
+Description=OrangeWifi API
 After=network.target postgresql.service
 
 [Service]
@@ -183,7 +183,7 @@ tokens do próprio admin (tokens duram 30 min).
    modelos) ou por TFTP, conforme o guia do modelo.
 4. Após o boot, acesse `http://192.168.1.1` (LuCI).
 
-### 4.2 Instalar o pacote do Portal Cativo
+### 4.2 Instalar o pacote do OrangeWifi
 
 ```sh
 scp -r router/ root@IP_DO_ROTEADOR:/tmp/portal-cativo

@@ -67,6 +67,42 @@ export default async function adminRoutes(app) {
     return { token: tokenAdmin(app, admin), papel: admin.papel, tenant_id: admin.tenant_id };
   });
 
+  app.get('/resumo', { preHandler: authAdmin() }, async (req) => {
+    const tenantId = escopoTenant(req, req.query.tenant_id);
+    const filtro = tenantId ? 'and tenant_id = $1' : '';
+    const params = tenantId ? [tenantId] : [];
+    const [clientes, sessoes, logsHoje, tenants] = await Promise.all([
+      query(
+        `select count(*)::int as total,
+                count(*) filter (where status = 'ativo')::int as ativos,
+                count(*) filter (where status = 'suspenso')::int as suspensos
+           from usuarios where 1=1 ${filtro}`,
+        params,
+      ),
+      query(
+        `select count(*)::int as total from sessoes where fim is null ${filtro}`,
+        params,
+      ),
+      query(
+        `select count(*)::int as total,
+                count(*) filter (where acao = 'bloqueado')::int as bloqueados
+           from logs_acesso where ts >= date_trunc('day', now()) ${filtro}`,
+        params,
+      ),
+      req.admin.papel === 'rede'
+        ? query('select count(*)::int as total from tenants where ativo = true')
+        : Promise.resolve(null),
+    ]);
+    const cadeia = tenantId ? await verificarCadeia(tenantId) : null;
+    return {
+      clientes: clientes.rows[0],
+      sessoes_ativas: sessoes.rows[0].total,
+      hoje: { logs: logsHoje.rows[0].total, bloqueios: logsHoje.rows[0].bloqueados },
+      cadeia: cadeia ? { integra: cadeia.integra, verificados: cadeia.verificados } : null,
+      tenants: tenants ? tenants.rows[0].total : null,
+    };
+  });
+
   app.post('/tokens/revogar', { preHandler: authAdmin() }, async (req) => {
     await query('update admin_users set token_version = token_version + 1 where id = $1', [req.admin.id]);
     await registrarAuditoria({ adminId: req.admin.id, tenantId: req.admin.tenant_id, acao: 'revogar_proprios_tokens', ip: req.ip });

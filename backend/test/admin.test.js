@@ -49,6 +49,22 @@ test('login admin exige senha e TOTP validos', async () => {
   assert.equal(ok.json().papel, 'loja');
 });
 
+test('resumo do painel retorna contadores e cadeia integra', async () => {
+  await criarClienteAtivo(tenant.id, { telefone: '+5511933330001', nome: 'Maria Resumo' });
+  const r = await app.inject({ method: 'GET', url: '/v1/admin/resumo',
+    headers: { authorization: `Bearer ${tokenAdmin}` } });
+  assert.equal(r.statusCode, 200);
+  const corpo = r.json();
+  assert.ok(corpo.clientes.total >= 1);
+  assert.ok(corpo.clientes.ativos >= 1);
+  assert.equal(typeof corpo.sessoes_ativas, 'number');
+  assert.equal(typeof corpo.hoje.logs, 'number');
+  assert.equal(typeof corpo.hoje.bloqueios, 'number');
+  assert.ok(corpo.cadeia);
+  assert.equal(corpo.cadeia.integra, true);
+  assert.equal(corpo.tenants, null);
+});
+
 test('ficha do cliente com exportacao CSV e PDF', async () => {
   const cliente = await criarClienteAtivo(tenant.id, { telefone: '+5511955550001', nome: 'Jose Souza' });
   const csv = await app.inject({ method: 'GET', url: `/v1/admin/clientes/${cliente.id}/exportar?formato=csv`,

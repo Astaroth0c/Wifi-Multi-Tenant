@@ -1,11 +1,11 @@
 #!/bin/sh
-# Instalação do Portal Cativo em OpenWRT/UnTangled.
+# Instalação do OrangeWifi em OpenWRT/UnTangled.
 # Uso: sh install.sh   (executar no próprio roteador, com o pacote copiado via scp)
 set -e
 
 [ -f /etc/openwrt_release ] || { echo "ERRO: rode em OpenWRT/UnTangled."; exit 1; }
 
-echo "== Portal Cativo: instalando pacotes =="
+echo "== OrangeWifi: instalando pacotes =="
 opkg update
 opkg install coova-chilli dnsmasq-full curl ca-certificates ip-full || {
   echo "ERRO: falha ao instalar pacotes. Verifique conexão e repositórios."; exit 1;

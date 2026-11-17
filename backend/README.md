@@ -1,4 +1,4 @@
-# Portal Cativo Wi-Fi Multi-Tenant — Backend (MVP)
+# OrangeWifi — Backend (MVP)
 
 API REST multi-tenant (Node.js + Fastify + PostgreSQL) do portal cativo para Wi-Fi
 de clientes em lojas, conforme o spec aprovado. Serve o portal do cliente (PWA),

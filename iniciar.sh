@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Portal Cativo — menu de controle (tudo em um lugar, estilo "clicar e abrir")
+# OrangeWifi — menu de controle (tudo em um lugar, estilo "clicar e abrir")
 #
 # Uso:  sudo bash iniciar.sh
 #
@@ -105,7 +105,7 @@ menu() {
   while true; do
     echo
     echo "=============================================="
-    echo " Portal Cativo — menu"
+    echo " OrangeWifi — menu"
     if rodando; then echo " [servidor: RODANDO]"; else echo " [servidor: parado]"; fi
     echo "=============================================="
     echo " 1) Configurar tudo (primeira vez ou consertar)"
