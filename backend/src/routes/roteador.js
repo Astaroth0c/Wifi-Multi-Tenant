@@ -95,8 +95,8 @@ export default async function roteadorRoutes(app) {
       `select s.id, s.usuario_id, d.mac, s.ip_interno::text as ip_interno, s.inicio
          from sessoes s
          join dispositivos d on d.id = s.dispositivo_id
-        where s.tenant_id = $1 and s.fim is null and s.inicio > now() - interval '15 minutes'
-        order by s.inicio asc`,
+        where s.tenant_id = $1 and s.fim is null
+        order by s.inicio desc limit 500`,
       [req.tenant.id],
     );
     return { autorizacoes: r.rows.map((s) => ({

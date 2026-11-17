@@ -13,6 +13,7 @@ e gestão multi-tenant.
 | `admin/` | Painel administrativo web (React + Vite), servido em `/admin/` | ✅ concluído |
 | `app/` | App Android (React Native, APK assinado) — fonte + instruções de build | ✅ fonte concluída (APK compilado na sua máquina) |
 | `router/` | Pacote de provisionamento OpenWRT/UnTangled (chilli, firewall, DNS filtrado, logs) | ✅ concluído |
+| `gateway/` | Gateway em Debian/Kali/Raspberry Pi (nftables + dnsmasq + backend na mesma máquina) — alternativa para roteadores sem OpenWRT | ✅ concluído |
 | `docs/` | Manual de instalação e uso | ✅ `docs/MANUAL.md` |
 
 ## Comece por aqui

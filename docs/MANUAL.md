@@ -212,6 +212,27 @@ Isso aponta o portal cativo do Chilli para o nosso PWA
 - Bloqueios por DNS (`address=/dominio/192.168.182.1`); tentativas aparecem
   nos logs com categoria `adulto`.
 
+### 4.6 Alternativa: gateway em Debian/Kali/Raspberry Pi (sem OpenWRT)
+
+Quando não há roteador compatível com OpenWRT (ex.: Mercusys MW301R, MW330HP
+e MR30G não têm suporte), um **mini PC / Pi / PC velho com 2 interfaces de
+rede** assume o papel de roteador e ainda roda o backend na mesma máquina.
+Os roteadores comuns ficam em **modo Access Point** (DHCP desligado, ligados
+na LAN do gateway) irradiando o Wi-Fi guest.
+
+```sh
+git clone https://github.com/Astaroth0c/Wifi-Multi-Tenant.git
+cd Wifi-Multi-Tenant/gateway
+sudo bash install.sh        # pacotes, PostgreSQL, backend (systemd), firewall
+cd ../backend && npm run seed
+sudo bash provisionar.sh TENANT_ID ROUTER_TOKEN IF_WAN IF_GUEST
+```
+
+Portal cativo por **nftables**: clientes não autorizados têm HTTP/HTTPS
+redirecionado ao PWA; os autorizados (sincronizados do backend a cada minuto)
+navegam com NAT. DNS filtrado por dnsmasq; logs entram na mesma cadeia de
+hash. Detalhes em `gateway/README.md`.
+
 ---
 
 ## 5. Portal cliente (PWA)
