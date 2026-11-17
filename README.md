@@ -25,7 +25,11 @@ solução de problemas.
 Resumo rápido:
 
 ```bash
-# Servidor — script automático (Debian/Kali/Pi): pacotes, banco, .env, schema e admin
+# Tudo em um menu (recomendado no Kali/Debian/Pi): configura, inicia, mostra o QR do 2FA,
+# abre o painel no navegador e troca a senha do admin:
+sudo bash iniciar.sh
+
+# …ou só a configuração automática (pacotes, banco, .env, schema e admin):
 sudo bash configurar.sh
 
 # …ou manualmente:

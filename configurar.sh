@@ -36,7 +36,7 @@ command -v npm  >/dev/null 2>&1 || FALTANDO="$FALTANDO npm"
 command -v psql >/dev/null 2>&1 || FALTANDO="$FALTANDO postgresql"
 if [ -n "$FALTANDO" ]; then
   echo "   instalando:$FALTANDO"
-  apt update -qq
+  apt update -qq 2>/dev/null || echo "   (apt update falhou — repositório quebrado no sistema; tentando instalar mesmo assim)"
   apt install -y -qq $FALTANDO
 else
   echo "   tudo instalado."
