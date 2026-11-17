@@ -128,10 +128,26 @@ npm run --silent migrate
 echo "   schema aplicado."
 
 if [ "${1:-}" = "--reset-admin" ]; then
-  ADMIN_SENHA="$SENHA_ADMIN" npm run --silent seed
+  SAIDA_SEED=$(ADMIN_SENHA="$SENHA_ADMIN" npm run --silent seed 2>&1)
   echo "   admin (re)criado com a senha: $SENHA_ADMIN"
 else
-  npm run --silent seed
+  SAIDA_SEED=$(npm run --silent seed 2>&1)
+fi
+echo "$SAIDA_SEED" | sed 's/^/   /'
+TOTP_SECRET=$(echo "$SAIDA_SEED" | sed -n 's/^Segredo TOTP.*: //p' | tail -1)
+
+# QR Code do 2FA para escanear com o app autenticador
+if [ -n "$TOTP_SECRET" ]; then
+  if ! command -v qrencode >/dev/null 2>&1; then
+    apt install -y -qq qrencode >/dev/null 2>&1 || true
+  fi
+  if command -v qrencode >/dev/null 2>&1; then
+    echo
+    echo "   Abra o app autenticador no celular (Google Authenticator/Aegis):"
+    echo "   toque em '+' > 'Ler QR Code' e aponte para a tela:"
+    echo
+    qrencode -t ANSIUTF8 "otpauth://totp/PortalCativo:admin?secret=${TOTP_SECRET}&issuer=PortalCativo" || true
+  fi
 fi
 
 # ------------------------------------------------------------------ resumo
@@ -144,10 +160,13 @@ echo " 1. Inicie o servidor:      cd $DIR_BACKEND && npm start"
 echo " 2. Painel admin:           http://localhost:3000/admin/"
 echo "    (ou na rede local)      http://${IP_LOCAL:-SEU_IP}:3000/admin/"
 echo
-echo " CREDENCIAIS DO ADMIN (veja acima o 'Segredo TOTP' impresso):"
-echo "   e-mail:  admin@rede.local   (padrão; mude com ADMIN_EMAIL=... npm run seed)"
-echo "   senha:   troque-esta-senha  (padrão; mude com ADMIN_SENHA=... npm run seed)"
-echo "   2FA:     cadastre o Segredo TOTP no app autenticador (Google Authenticator/Aegis)"
+echo " SEU LOGIN NO PAINEL (http://localhost:3000/admin/):"
+echo "   e-mail:  admin@rede.local"
+echo "   senha:   troque-esta-senha"
+if [ -n "${TOTP_SECRET:-}" ]; then
+  echo "   código 2FA: o número de 6 dígitos do app autenticador"
+  echo "   (segredo para digitar manualmente no app: $TOTP_SECRET)"
+fi
 echo
 echo " 3. No painel, aba 'Tenants': crie o tenant e copie o Tenant ID."
 echo " 4. Portal do cliente:       http://localhost:3000/portal/?tenant=TENANT_ID"
