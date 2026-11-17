@@ -343,4 +343,53 @@ são gerenciados pelo backend.
 | Health check | `http://SERVIDOR:3000/v1/health` |
 | Migrar banco | `npm run migrate` (em `backend/`) |
 | Criar admin | `npm run seed` (imprime segredo TOTP) |
-| Testes | `npm test` (46 testes de integração) |
+| Testes | `npm test` (49 testes de integração) |
+
+---
+
+## 11. Extras opcionais
+
+### 11.1 Acesso remoto com VPN (EdgeVPN)
+
+Para acessar o painel de fora da loja **sem abrir portas no roteador**:
+
+```bash
+cd ~/Wifi-Multi-Tenant
+sudo bash extras/vpn/instalar-edgevpn.sh
+```
+
+Detalhes, topologia e avisos de segurança: **[extras/vpn/README.md](../extras/vpn/README.md)**.
+A VPN é só para o administrador — o tráfego dos clientes não passa por ela.
+
+### 11.2 Monitoramento com Grafana (opcional)
+
+O painel OrangeWifi já traz dashboard e gráficos embutidos (aba **Início**).
+Se quiser um painel de rede mais completo (Grafana), ele pode ler o banco
+PostgreSQL diretamente, com um usuário **somente leitura**:
+
+```bash
+# 1. Criar o usuário read-only do Grafana (troque a senha!)
+sudo -u postgres psql -d portalcativo -c "CREATE ROLE grafana LOGIN PASSWORD 'TROQUE_ESTA_SENHA';"
+sudo -u postgres psql -d portalcativo -c "GRANT USAGE ON SCHEMA public TO grafana;
+  GRANT SELECT ON ALL TABLES IN SCHEMA public TO grafana;
+  ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO grafana;"
+
+# 2. Instalar o Grafana (Debian/Kali)
+sudo apt install -y grafana || true   # se o pacote não existir, use o repositório oficial: https://grafana.com/docs/grafana/latest/setup-grafana/install-debian/
+sudo systemctl enable --now grafana-server
+```
+
+No Grafana: **Connections → Data sources → PostgreSQL**
+(host `127.0.0.1`, database `portalcativo`, usuário `grafana`, TLS *disable*).
+
+Consultas prontas para painéis:
+
+| Painel | SQL |
+|---|---|
+| Sessões ao vivo | `select count(*) from sessoes where fim is null;` |
+| Logs por hora (24h) | `select date_trunc('hour', ts) as hora, count(*), count(*) filter (where acao = 'bloqueado') as bloqueios from logs_acesso where ts > now() - interval '24 hours' group by 1 order by 1;` |
+| Bloqueios por dia (14d) | `select date_trunc('day', ts) as dia, count(*) filter (where acao = 'bloqueado') from logs_acesso where ts > now() - interval '14 days' group by 1 order by 1;` |
+| Cadastros por dia | `select date_trunc('day', criado_em) as dia, count(*) from usuarios group by 1 order by 1;` |
+
+> O usuário `grafana` é read-only por construção: ele **não** consegue alterar
+> logs (a cadeia de hash continua protegida) nem dados pessoais cifrados em texto puro.

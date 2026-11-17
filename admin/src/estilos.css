@@ -264,3 +264,19 @@ tr:last-child td { border-bottom: none; }
   background: var(--laranja-suave); box-shadow: none; color: var(--laranja-escuro);
 }
 .paleta .vazio { padding: 18px; text-align: center; color: var(--cor-texto-suave); font-size: 0.9rem; }
+
+.grade-graficos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+.grafico-cartao h3 { margin: 0 0 4px; font-size: 0.95rem; }
+.grafico { width: 100%; height: auto; margin-top: 8px; }
+.grafico-barra.barra-logs { fill: var(--laranja); }
+.grafico-barra.barra-bloqueios { fill: var(--cor-erro); }
+.grafico-barra.barra-sessoes { fill: rgba(234, 88, 12, 0.35); }
+.grafico-barra:hover { opacity: 0.8; }
+.grafico-linha-guia { stroke: var(--borda-vidro); stroke-width: 1; stroke-dasharray: 3 4; }
+.grafico-rotulo { fill: var(--cor-texto-suave); font-size: 10px; }
+.grafico-legenda { display: flex; gap: 14px; font-size: 0.75rem; color: var(--cor-texto-suave); margin-bottom: 4px; }
+.grafico-legenda span { display: inline-flex; align-items: center; gap: 5px; }
+.grafico-amostra { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.grafico-amostra.barra-logs { background: var(--laranja); }
+.grafico-amostra.barra-bloqueios { background: var(--cor-erro); }
+.grafico-amostra.barra-sessoes { background: rgba(234, 88, 12, 0.35); }

@@ -65,6 +65,27 @@ test('resumo do painel retorna contadores e cadeia integra', async () => {
   assert.equal(corpo.tenants, null);
 });
 
+test('graficos retornam series de 24 horas e 14 dias', async () => {
+  const r = await app.inject({ method: 'GET', url: '/v1/admin/graficos',
+    headers: { authorization: `Bearer ${tokenAdmin}` } });
+  assert.equal(r.statusCode, 200);
+  const corpo = r.json();
+  assert.equal(corpo.por_hora.length, 24);
+  assert.equal(corpo.por_dia.length, 14);
+  for (const h of corpo.por_hora) {
+    assert.match(h.hora, /^\d{4}-\d{2}-\d{2}T\d{2}:00$/);
+    assert.equal(typeof h.logs, 'number');
+    assert.equal(typeof h.bloqueios, 'number');
+    assert.equal(typeof h.bytes, 'number');
+  }
+  for (const d of corpo.por_dia) {
+    assert.match(d.dia, /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(typeof d.logs, 'number');
+    assert.equal(typeof d.bloqueios, 'number');
+    assert.equal(typeof d.sessoes, 'number');
+  }
+});
+
 test('ficha do cliente com exportacao CSV e PDF', async () => {
   const cliente = await criarClienteAtivo(tenant.id, { telefone: '+5511955550001', nome: 'Jose Souza' });
   const csv = await app.inject({ method: 'GET', url: `/v1/admin/clientes/${cliente.id}/exportar?formato=csv`,

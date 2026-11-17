@@ -103,6 +103,81 @@ export default async function adminRoutes(app) {
     };
   });
 
+  app.get('/graficos', { preHandler: authAdmin() }, async (req) => {
+    const tenantId = escopoTenant(req, req.query.tenant_id);
+    const params = [];
+    let filtroLogs = '';
+    let filtroSessoes = '';
+    if (tenantId) {
+      params.push(tenantId);
+      filtroLogs = `and tenant_id = $${params.length}`;
+      filtroSessoes = `and tenant_id = $${params.length}`;
+    }
+    const [porHora, logsPorDia, sessoesPorDia] = await Promise.all([
+      query(
+        `select to_char(date_trunc('hour', ts), 'YYYY-MM-DD"T"HH24:00') as hora,
+                count(*)::int as logs,
+                count(*) filter (where acao = 'bloqueado')::int as bloqueios,
+                coalesce(sum(bytes), 0)::bigint as bytes
+           from logs_acesso
+          where ts >= date_trunc('hour', now()) - interval '23 hours' ${filtroLogs}
+          group by 1 order by 1`,
+        params,
+      ),
+      query(
+        `select to_char(date_trunc('day', ts), 'YYYY-MM-DD') as dia,
+                count(*)::int as logs,
+                count(*) filter (where acao = 'bloqueado')::int as bloqueios
+           from logs_acesso
+          where ts >= date_trunc('day', now()) - interval '13 days' ${filtroLogs}
+          group by 1 order by 1`,
+        params,
+      ),
+      query(
+        `select to_char(date_trunc('day', inicio), 'YYYY-MM-DD') as dia,
+                count(*)::int as sessoes
+           from sessoes
+          where inicio >= date_trunc('day', now()) - interval '13 days' ${filtroSessoes}
+          group by 1 order by 1`,
+        params,
+      ),
+    ]);
+
+    const chaveHora = (d) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:00`;
+    const chaveDia = (d) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const mapaHora = new Map(porHora.rows.map((r) => [r.hora, r]));
+    const serieHora = [];
+    for (let i = 23; i >= 0; i -= 1) {
+      const d = new Date(Date.now() - i * 3600e3);
+      const r = mapaHora.get(chaveHora(d));
+      serieHora.push({
+        hora: chaveHora(d),
+        logs: r?.logs || 0,
+        bloqueios: r?.bloqueios || 0,
+        bytes: Number(r?.bytes || 0),
+      });
+    }
+
+    const mapaDiaLogs = new Map(logsPorDia.rows.map((r) => [r.dia, r]));
+    const mapaDiaSessoes = new Map(sessoesPorDia.rows.map((r) => [r.dia, r]));
+    const serieDia = [];
+    for (let i = 13; i >= 0; i -= 1) {
+      const d = new Date(Date.now() - i * 86400e3);
+      const chave = chaveDia(d);
+      serieDia.push({
+        dia: chave,
+        logs: mapaDiaLogs.get(chave)?.logs || 0,
+        bloqueios: mapaDiaLogs.get(chave)?.bloqueios || 0,
+        sessoes: mapaDiaSessoes.get(chave)?.sessoes || 0,
+      });
+    }
+
+    return { por_hora: serieHora, por_dia: serieDia };
+  });
+
   app.post('/tokens/revogar', { preHandler: authAdmin() }, async (req) => {
     await query('update admin_users set token_version = token_version + 1 where id = $1', [req.admin.id]);
     await registrarAuditoria({ adminId: req.admin.id, tenantId: req.admin.tenant_id, acao: 'revogar_proprios_tokens', ip: req.ip });

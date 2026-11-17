@@ -8,7 +8,7 @@ e gestão multi-tenant.
 
 | Diretório | Componente | Status |
 |---|---|---|
-| `backend/` | API REST multi-tenant (Node.js + Fastify + PostgreSQL) — serve portal e painel | ✅ 47 testes de integração |
+| `backend/` | API REST multi-tenant (Node.js + Fastify + PostgreSQL) — serve portal e painel | ✅ 49 testes de integração |
 | `portal/` | PWA do portal cativo (cadastro, SMS, sessão, liberação no Chilli) | ✅ concluído |
 | `admin/` | Painel administrativo web (React + Vite), servido em `/admin/` | ✅ concluído |
 | `app/` | App Android (React Native, APK assinado) — fonte + instruções de build | ✅ fonte concluída (APK compilado na sua máquina) |
@@ -39,7 +39,7 @@ npm install
 npm run migrate               # aplica db/schema.sql (partições mensais inclusas)
 npm run seed                  # cria admin da rede e imprime o segredo TOTP
 npm start                     # http://localhost:3000
-npm test                      # 47 testes de integração (PostgreSQL real embutido)
+npm test                      # 49 testes de integração (PostgreSQL real embutido)
 
 # Painel admin: http://SERVIDOR:3000/admin/  (build pronto em admin/dist)
 # Portal cliente: http://SERVIDOR:3000/portal/?tenant=TENANT_ID

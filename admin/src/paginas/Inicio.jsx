@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../api.js';
+import { GraficoBarras, Legenda } from '../graficos.jsx';
+
+const SERIES_HORA = [
+  { chave: 'logs', classe: 'barra-logs', nome: 'Registros' },
+  { chave: 'bloqueios', classe: 'barra-bloqueios', nome: 'Bloqueios' },
+];
+const SERIES_DIA = [
+  { chave: 'logs', classe: 'barra-logs', nome: 'Logs' },
+  { chave: 'bloqueios', classe: 'barra-bloqueios', nome: 'Bloqueios' },
+  { chave: 'sessoes', classe: 'barra-sessoes', nome: 'Sessões' },
+];
 
 export default function Inicio({ sessao, irPara }) {
   const [resumo, setResumo] = useState(null);
+  const [graficos, setGraficos] = useState(null);
   const [erro, setErro] = useState(null);
 
   useEffect(() => {
     api('/resumo').then(setResumo).catch((e) => setErro(e.message));
+    api('/graficos').then(setGraficos).catch(() => setGraficos(null));
   }, [sessao]);
 
   return (
@@ -22,7 +35,7 @@ export default function Inicio({ sessao, irPara }) {
       </div>
 
       {erro && <p className="erro">Não consegui carregar o resumo: {erro}</p>}
-      {!resumo && !erro && <p className="muted" style={{ color: 'var(--cor-texto-suave)' }}>Carregando…</p>}
+      {!resumo && !erro && <p style={{ color: 'var(--cor-texto-suave)' }}>Carregando…</p>}
 
       {resumo && (
         <div className="painel-resumo">
@@ -59,6 +72,21 @@ export default function Inicio({ sessao, irPara }) {
               <p className="detalhe">lojas na sua rede</p>
             </div>
           )}
+        </div>
+      )}
+
+      {graficos && (
+        <div className="grade-graficos">
+          <div className="cartao grafico-cartao">
+            <h3>Atividade — últimas 24 horas</h3>
+            <Legenda series={SERIES_HORA} />
+            <GraficoBarras dados={graficos.por_hora} xChave="hora" series={SERIES_HORA} />
+          </div>
+          <div className="cartao grafico-cartao">
+            <h3>Últimos 14 dias</h3>
+            <Legenda series={SERIES_DIA} />
+            <GraficoBarras dados={graficos.por_dia} xChave="dia" series={SERIES_DIA} />
+          </div>
         </div>
       )}
     </div>
