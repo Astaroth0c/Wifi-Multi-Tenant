@@ -17,9 +17,19 @@ export default function Inicio({ sessao, irPara }) {
   const [graficos, setGraficos] = useState(null);
   const [erro, setErro] = useState(null);
 
-  useEffect(() => {
+  function carregar() {
+    setErro(null);
     api('/resumo').then(setResumo).catch((e) => setErro(e.message));
     api('/graficos').then(setGraficos).catch(() => setGraficos(null));
+  }
+
+  useEffect(() => {
+    carregar();
+    const intervalo = setInterval(() => {
+      api('/resumo').then(setResumo).catch(() => {});
+      api('/graficos').then(setGraficos).catch(() => {});
+    }, 30000);
+    return () => clearInterval(intervalo);
   }, [sessao]);
 
   return (
@@ -34,7 +44,19 @@ export default function Inicio({ sessao, irPara }) {
         </div>
       </div>
 
-      {erro && <p className="erro">Não consegui carregar o resumo: {erro}</p>}
+      {erro && (
+        <div className="boas-vindas vidro">
+          <h2>😕 Não consegui falar com o servidor</h2>
+          <p>
+            {erro === 'servidor_inacessivel'
+              ? 'O backend não está respondendo. Inicie-o pelo menu (sudo bash iniciar.sh, opção 2) e tente de novo.'
+              : `Erro: ${erro}`}
+          </p>
+          <div className="acoes-rapidas">
+            <button className="primario" onClick={carregar}>Tentar de novo</button>
+          </div>
+        </div>
+      )}
       {!resumo && !erro && <p style={{ color: 'var(--cor-texto-suave)' }}>Carregando…</p>}
 
       {resumo && (

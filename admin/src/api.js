@@ -18,9 +18,15 @@ export async function api(caminho, opcoes = {}) {
   const headers = { 'content-type': 'application/json', ...(opcoes.headers || {}) };
   const token = tokenAtual();
   if (token) headers.authorization = `Bearer ${token}`;
-  const resp = await fetch(`/v1/admin${caminho}`, { ...opcoes, headers });
-  if (resp.status === 401) {
+  let resp;
+  try {
+    resp = await fetch(`/v1/admin${caminho}`, { ...opcoes, headers });
+  } catch {
+    throw new Error('servidor_inacessivel');
+  }
+  if (resp.status === 401 && caminho !== '/login') {
     salvarToken(null);
+    localStorage.removeItem('pc_admin_sessao');
     window.location.reload();
     throw new Error('sessao_expirada');
   }

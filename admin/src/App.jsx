@@ -208,6 +208,7 @@ function mensagemErro(codigo) {
     totp_invalido: 'Código 2FA inválido.',
     campos_obrigatorios: 'Preencha todos os campos.',
     muitas_tentativas: 'Muitas tentativas. Aguarde um minuto.',
+    servidor_inacessivel: 'Servidor não responde. Inicie-o pelo menu: sudo bash iniciar.sh (opção 2).',
   };
   return mapa[codigo] || `Erro: ${codigo}`;
 }
