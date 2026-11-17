@@ -25,7 +25,10 @@ solução de problemas.
 Resumo rápido:
 
 ```bash
-# Servidor
+# Servidor — script automático (Debian/Kali/Pi): pacotes, banco, .env, schema e admin
+sudo bash configurar.sh
+
+# …ou manualmente:
 cd backend
 cp .env.example .env          # ajuste DATABASE_URL, JWT_SECRET e DATA_KEY
 npm install

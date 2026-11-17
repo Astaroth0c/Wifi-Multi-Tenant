@@ -52,7 +52,21 @@ sudo -u postgres createuser --pwprompt portalcativo
 sudo -u postgres createdb -O portalcativo portalcativo
 ```
 
-### 2.2 Instalação
+### 2.2 Instalação (script automático — recomendado)
+
+O script cuida de tudo: pacotes, collation do PostgreSQL, usuário/banco,
+senhas geradas, `.env`, schema e admin. É idempotente (pode rodar de novo).
+
+```sh
+git clone https://github.com/Astaroth0c/Wifi-Multi-Tenant.git
+cd Wifi-Multi-Tenant
+sudo bash configurar.sh
+```
+
+Ele imprime no final as credenciais do admin e o segredo TOTP. Para redefinir
+o admin depois: `sudo ADMIN_SENHA=NovaSenha123 bash configurar.sh --reset-admin`.
+
+### 2.2b Instalação manual (passo a passo)
 
 ```sh
 git clone https://github.com/Astaroth0c/Wifi-Multi-Tenant.git

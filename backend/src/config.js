@@ -1,4 +1,19 @@
+import { readFileSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
 const env = process.env;
+
+// carrega o .env do backend sem sobrescrever variáveis já definidas no ambiente
+try {
+  const caminhoEnv = join(dirname(fileURLToPath(import.meta.url)), '..', '.env');
+  if (existsSync(caminhoEnv)) {
+    for (const linha of readFileSync(caminhoEnv, 'utf8').split('\n')) {
+      const m = linha.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/);
+      if (m && !(m[1] in env)) env[m[1]] = m[2].trim();
+    }
+  }
+} catch { /* sem .env: usa defaults */ }
 
 function dataKey() {
   if (env.DATA_KEY) {
